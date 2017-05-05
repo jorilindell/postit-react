@@ -1,0 +1,361 @@
+@import "./colors.css";
+@import "./typography.css";
+
+body {
+  background-color: var(--silver);
+  color: #58585a;
+}
+a {
+  color: #0275d8;
+  text-decoration: none
+}
+h3 {
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.1428571;
+  margin-bottom: 1rem;
+}
+.page {
+  width: 100%
+}
+.pageContainer {
+  width: 100%;
+  display: flex;
+}
+
+.header {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-height: 40px;
+  background-color: var(--white);
+}
+
+.header ul {
+  width: 100%;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.header ul li {
+    float: left;
+}
+
+.header ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+.component {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--silver);
+}
+
+.content {
+  min-height: 100%;
+  width: 100%;
+  padding-top: 50px;
+}
+.container {
+  width: 960px;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sectionHeaderContainer {
+  margin-bottom: 0rem;
+}
+.sectionHeaderLayout {
+  display: inline-block;
+  width: 50%;
+}
+.sectionHeaderActions {
+  display: inline-block;
+  width: 50%;
+}
+
+.table {
+  background-color: var(--white);
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+}
+.table > thead > tr >th {
+  color: var(--white);
+  background-color: var(--dark-grey);
+  height: 36px;
+  font-size: 1.2rem;
+  font-weight: 200;
+  text-transform: uppercase;
+  text-align: left;
+}
+.table > tbody > tr > td {
+  height: 50px;
+  font-size: 1rem;
+  font-weight: 200;
+  text-align: left;
+}
+.table > thead > tr >th, .table > tbody > tr >td {
+  padding: 5px 18px;
+}
+
+.table > tbody > tr:nth-of-type(odd) {
+  background-color: var(--odd-row);
+}
+.table > tbody > tr:nth-of-type(even) {
+  background-color: var(--even-row);
+}
+.actionColumn {
+  width: 90px;
+}
+.statusColumn {
+  width: 150px;
+}
+
+.btnAdd {
+  color: var(--white);
+  background-color: var(--add-button);
+  padding: 2px;
+  border: none;
+  float: right;
+  opacity: 1;
+  cursor: pointer;
+
+}
+.btnAdd span {
+  display: block;
+  height: 36px;
+  width: 36px;
+  line-height: 30px;
+  font-size: 2rem;
+}
+.btnAdd:hover {
+  opacity: 0.8;
+}
+.btnAction {
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  font-size: 1.5rem;
+  opacity: 0.8;
+  color: var(--link);
+  cursor: pointer;
+}
+.btnAction:hover {
+  opacity: 1;
+}
+.btnDone {
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  font-size: 1.5rem;
+  opacity: 0.8;
+  color: var(--green);
+  cursor: pointer;
+}
+.btnAction:hover {
+  opacity: 1;
+}
+.btnUndone {
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  font-size: 1.5rem;
+  opacity: 0.8;
+  color: var(--red);
+  cursor: pointer;
+}
+.btnAction:hover {
+  opacity: 1;
+}
+.modalBackdrop {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.2);
+  padding: 50px;
+}
+
+.modal {
+  position: relative;
+  background-color: #fff;
+  border-radius: 5px;
+  max-width: 500px;
+  min-height: 300px;
+  margin: 0px auto;
+  padding: 30px 20px;
+}
+.modalFooter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: var(--footer-background);
+  width: calc(100% - 40px);
+  padding: 15px 20px;
+  border-radius: 0px 0px 5px 5px;
+  text-align: right;
+  margin-right: 10px;
+}
+.modalBody {
+  position: absolute;
+  top: 76px;
+  bottom: 71px;
+  padding: 20px 20px 0px 20px;
+  left: 0px;
+  width: calc(100% - 40px);
+
+}
+.modalHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--dark-grey);
+  color: var(--white);
+  padding: 20px;
+  width: calc(100% - 40px);
+  border-radius: 5px 5px 0px 0px;
+}
+.formGroup {
+  padding-bottom: 12px;
+  margin-bottom: 0;
+}
+.inputGroup {
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 10px;
+  display: table;
+}
+.formInput {
+  height: auto;
+  max-width: 900px;
+  padding: .5em .85714em;
+  font-size: 1rem;
+  width: calc(100% - 30px);
+  line-height: 1.6;
+  border: 1px solid #DDD;
+  border-radius: 2px;
+  box-shadow: none;
+  transition: box-shadow 0s
+}
+label {
+  margin-bottom: 10px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-block;
+  max-width: 100%;
+}
+.modalHeader h1 {
+  margin: 0px;
+}
+.btnPrimary {
+  min-width: 8rem;
+  padding: .5em 1.28571em;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.6;
+  background-color: var(--link);
+  color: #fff;
+  text-transform: uppercase;
+  border: 0;
+  border-radius: 2px;
+  fill: #fff;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.btnPrimary:hover {
+  opacity: 0.8;
+}
+
+button:disabled, button:hover:disabled {
+  opacity: 0.65;
+}
+
+.btnDelete {
+  min-width: 8rem;
+  padding: .5em 1.28571em;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.6;
+  background-color: var(--red);
+  color: var(--white);
+  text-transform: uppercase;
+  border: 0;
+  border-radius: 2px;
+  fill: #fff;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.btnDelete:hover {
+  opacity: 0.8;
+}
+
+.btnCancel {
+  min-width: 8rem;
+  padding: .5em 1.28571em;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.6;
+  background-color: #ddd;
+  color: #333;
+  text-transform: uppercase;
+  border: 0;
+  margin-left: 10px;
+  border-radius: 2px;
+  fill: #fff;
+  cursor: pointer;
+}
+.btnCancel:hover {
+  opacity: 0.8;
+}
+.statusDone {
+  width: 70px;
+  display: inline-block;
+  color: var(--green);
+}
+.statusUndone {
+  width: 70px;
+  display: inline-block;
+  color: var(--red)
+}
+.breadcrumbArea {
+  background-color: #FFF
+}
+.breadcrumb {
+  padding: .75rem 0rem;
+  margin: 0px;
+  list-style: none;
+}
+.breadcrumb::after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.breadcrumb .breadcrumbItem {
+  float: left;
+}
+.breadcrumb .breadcrumbItem .active {
+  color: #636c72
+}
+.breadcrumb .breadcrumbItem + .breadcrumbItem::before {
+  display: inline-block;
+  padding-right: .5rem;
+  padding-left: .5rem;
+  color: #636c72;
+  content: "/"
+}
