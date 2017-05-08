@@ -359,3 +359,10 @@ button:disabled, button:hover:disabled {
   color: #636c72;
   content: "/"
 }
+.validationText {
+  margin-top: 5px;
+  display: block;
+  color: var(--red);
+  font-style: italic;
+  font-size:1rem;
+}

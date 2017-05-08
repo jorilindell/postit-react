@@ -20,7 +20,9 @@ export const boardReducer: Reducer<Array<Board>> = handleActions({
 }, [])
 
 export const boardModalReducer: Reducer<BoardModalType> = handleActions({
-  CHANGE_BOARD_MODAL_STATUS: (state, {payload}) => payload,
+  CHANGE_BOARD_MODAL_STATUS: (state, {payload}) => {
+    return payload
+  },
 }, {isAddBoardModalOpen: false, isEditBoardModalOpen: false, isDeleteBoardModalOpen: false})
 
 export default combineReducers({

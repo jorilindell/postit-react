@@ -5,7 +5,9 @@ import {connect} from 'react-redux'
 //import {ToastContainer, ToastMessage} from 'react-toastr'
 
 import {fetchBoards, addBoardAction, editBoardAction, deleteBoardAction, changeBoardModalStatuses} from './actions'
-import {AddBoardModal, EditBoardModal, DeleteBoardModal} from './BoardModals.js'
+import {DeleteBoardModal} from './DeleteBoardModal.js'
+import {AddBoardForm} from './AddBoardForm'
+import {EditBoardForm} from './EditBoardForm'
 import {getBoards, getBoardModals} from './selectors'
 import {Header} from '../common/Header.js'
 import css from '../styles/common.css'
@@ -29,6 +31,7 @@ type Props = {
   deleteBoardAction: Function,
   changeBoardModalStatuses: Function,
   params: React.PropTypes.object,
+  submitBoard: Function
 }
 
 export class Boards extends Component {
@@ -59,7 +62,7 @@ export class Boards extends Component {
   }
 
   showAddBoardModal = () => {
-    this.refs.addmodal.clearNameField()
+    //this.refs.addmodal.clearNameField()
     this.props.changeBoardModalStatuses(addModalEnabled)
   }
 
@@ -76,7 +79,7 @@ export class Boards extends Component {
     this.setState({
       activeBoard: board,
     })
-    this.refs.editmodal.setGroupNameField(board.name)
+    //this.refs.editmodal.setGroupNameField(board.name)
     this.props.changeBoardModalStatuses(editModalEnabled)
   }
 
@@ -102,29 +105,24 @@ export class Boards extends Component {
   deleteBoard = () => {
     this.props.deleteBoardAction({boardId: this.state.activeBoard.id})
   }
+  submitBoard = () => {
 
+  }
   render() {
     return (
       <div className={css.page}>
         {/* <ToastContainer ref="container"
             toastMessageFactory={ToastMessageFactory}
             className="toast-top-right"></ToastContainer> */}
-        <AddBoardModal ref='addmodal'
-          show={this.props.modalStatuses.isAddBoardModalOpen}
-          onSave={(groupName) => {this.addBoard(groupName)}}
-          onCancel={this.closeAddBoardModal}>
-        </AddBoardModal>
-        <EditBoardModal ref='editmodal'
-          show={this.props.modalStatuses.isEditBoardModalOpen}
-          onSave={(groupName) => {this.saveBoard(groupName)}}
-          onCancel={this.closeEditBoardModal}>
-        </EditBoardModal>
-        <DeleteBoardModal
-          boardName={this.state.activeBoard.name}
-          show={this.props.modalStatuses.isDeleteBoardModalOpen}
-          onDelete={() => {this.deleteBoard()}}
-          onCancel={this.closeDeleteBoardModal}>
-        </DeleteBoardModal>
+        {this.props.modalStatuses.isAddBoardModalOpen &&
+          <AddBoardForm  onCancel={this.closeAddBoardModal} onSubmit={(group) => {this.addBoard(group.name)}} initialValues={{name: ''}}/>
+        }
+        {this.props.modalStatuses.isEditBoardModalOpen &&
+          <EditBoardForm  ref='addmodal' onCancel={this.closeEditBoardModal} onSubmit={(group) => {this.saveBoard(group.name)}} initialValues={{name: this.state.activeBoard.name}}/>
+        }
+        {this.props.modalStatuses.isDeleteBoardModalOpen &&
+          <DeleteBoardModal boardName={this.state.activeBoard.name} onDelete={() => {this.deleteBoard()}} onCancel={this.closeDeleteBoardModal}></DeleteBoardModal>
+        }
         <Header></Header>
         <div className={css.content}>
           <div className={css.container}>

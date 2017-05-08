@@ -28,6 +28,11 @@ function* addBoard(args): Generator<> {
       yield put(handleCreatedBoard(createdBoard))
       break
     }
+    case 400: {
+      const errormessage = yield response.json()
+      alert(`Cannot create new board: ${errormessage.invalidAttributes.name[0].message}`)
+      break
+    }
     default: {
       // If case of error show error message
       alert('Board creation failed')
@@ -53,9 +58,14 @@ function* editBoard(args): Generator<> {
       yield put(handleEditedBoard(editedBoard[0]))
       break
     }
+    case 400: {
+      const errormessage = yield response.json()
+      alert(`Cannot save board: ${errormessage.invalidAttributes.name[0].message}`)
+      break
+    }
     default: {
       // If case of error show error message
-      alert('Editing board settings failed')
+      alert('Board creation failed')
       break
     }
   }

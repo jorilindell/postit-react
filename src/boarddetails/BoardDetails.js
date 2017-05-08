@@ -8,7 +8,9 @@ import {Header} from '../common/Header'
 import {fetchBoardDetails, addNoteAction, editNoteAction, deleteNoteAction,
   setDoneAction, setUndoneAction, changeDetailModalStatuses} from './actions'
 import {getBoardDetails, getBoardDetailModals} from './selectors'
-import {AddNoteModal, EditNoteModal, DeleteNoteModal} from './NoteModals'
+import {DeleteNoteModal} from './DeleteNoteModal'
+import {AddNoteForm} from './AddNoteForm'
+import {EditNoteForm} from './EditNoteForm'
 
 import type {RootState} from '$src/root/types'
 import type {BoardDetailsType, BoardDetailModalType} from './types'
@@ -56,7 +58,6 @@ export class BoardDetails extends Component {
   }
 */
   showAddNoteModal = () => {
-    this.refs.addmodal.clearNameField()
     this.props.changeDetailModalStatuses(addModalEnabled)
   }
 
@@ -74,7 +75,6 @@ export class BoardDetails extends Component {
     this.setState({
       activeNote: note,
     })
-    this.refs.editmodal.setMessageField(note.message)
     this.props.changeDetailModalStatuses(editModalEnabled)
   }
 
@@ -124,22 +124,15 @@ export class BoardDetails extends Component {
         {/* <ToastContainer ref="container"
             toastMessageFactory={ToastMessageFactory}
             className="toast-top-right"></ToastContainer> */}
-        <AddNoteModal ref='addmodal'
-          show={this.props.modalStatuses.isAddNoteModalOpen}
-          onSave={(message) => {this.addNote(message)}}
-          onCancel={this.closeAddNoteModal}>
-        </AddNoteModal>
-        <EditNoteModal ref='editmodal'
-          show={this.props.modalStatuses.isEditNoteModalOpen}
-          onSave={(message) => {this.saveNote(message)}}
-          onCancel={this.closeEditNoteModal}>
-        </EditNoteModal>
-        <DeleteNoteModal
-          message={this.state.activeNote.message}
-          show={this.props.modalStatuses.isDeleteNoteModalOpen}
-          onDelete={() => {this.deleteNote()}}
-          onCancel={this.closeDeleteNoteModal}>
-        </DeleteNoteModal>
+        {this.props.modalStatuses.isAddNoteModalOpen &&
+          <AddNoteForm  onCancel={this.closeAddNoteModal} onSubmit={(note) => {this.addNote(note.message)}} initialValues={{message: ''}}/>
+        }
+        {this.props.modalStatuses.isEditNoteModalOpen &&
+          <EditNoteForm onCancel={this.closeEditNoteModal} onSubmit={(note) => {this.saveNote(note.message)}} initialValues={{message: this.state.activeNote.message}}/>
+        }
+        {this.props.modalStatuses.isDeleteNoteModalOpen &&
+          <DeleteNoteModal message={this.state.activeNote.message} onDelete={() => {this.deleteNote()}} onCancel={this.closeDeleteNoteModal} />
+        }
         <Header></Header>
         <div className={css.content}>
           <div className={css.breadcrumbArea}>

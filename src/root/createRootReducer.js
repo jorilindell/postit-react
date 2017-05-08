@@ -7,6 +7,7 @@ import boardDetailsReducer from '../boarddetails/reducer'
 import boardDetailsModalReducer from '../boarddetails/reducer'
 import type {Reducer} from '../types'
 import type {RootState} from './types'
+import {reducer as formReducer} from 'redux-form'
 
 
 export default (): Reducer<RootState> =>
@@ -15,4 +16,5 @@ export default (): Reducer<RootState> =>
     boardmodals: boardModalReducer,
     activeboard: boardDetailsReducer,
     detailmodals: boardDetailsModalReducer,
+    form: formReducer,
   })
