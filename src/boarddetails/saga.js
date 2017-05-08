@@ -2,7 +2,7 @@
 
 import {takeLatest} from 'redux-saga'
 import {fork, put} from 'redux-saga/effects'
-import {receiveBoardDetails, changeDetailModalStatuses} from './actions'
+import {receiveBoardDetails, handleCreatedNote, handleEditedNote, handleDeletedNote, changeDetailModalStatuses} from './actions'
 import {allModalsDisabled} from './BoardDetails'
 
 function* fetchBoardDetails(args): Generator<> {
@@ -22,12 +22,11 @@ function* addNote(args): Generator<> {
   )
   switch (response.status) {
     case 200: {
+      const createdNote = yield response.json()
       // Hide Add note modal
       yield put(changeDetailModalStatuses(allModalsDisabled))
       // Update board details view
-      const detailsResponse = yield fetch(`${API_URL}/boards/${args.payload.boardId}`)
-      const boarddetails = yield detailsResponse.json()
-      yield put(receiveBoardDetails(boarddetails))
+      yield put(handleCreatedNote(createdNote))
       break
     }
     default: {
@@ -49,12 +48,11 @@ function* editNote(args): Generator<> {
   )
   switch (response.status) {
     case 200: {
+      const editedNote = yield response.json()
       // Hide Edit note modal
       yield put(changeDetailModalStatuses(allModalsDisabled))
       // Update board details view
-      const detailsResponse = yield fetch(`${API_URL}/boards/${args.payload.boardId}`)
-      const boarddetails = yield detailsResponse.json()
-      yield put(receiveBoardDetails(boarddetails))
+      yield put(handleEditedNote(editedNote[0]))
       break
     }
     default: {
@@ -69,12 +67,11 @@ function* deleteNote(args): Generator<> {
   const response = yield fetch(`${API_URL}/notes/${args.payload.noteId}`, {method: 'DELETE'})
   switch (response.status) {
     case 200: {
+      const deletedNote = yield response.json()
       // Hide Delete note modal
       yield put(changeDetailModalStatuses(allModalsDisabled))
       // Update board details view
-      const detailsResponse = yield fetch(`${API_URL}/boards/${args.payload.boardId}`)
-      const boarddetails = yield detailsResponse.json()
-      yield put(receiveBoardDetails(boarddetails))
+      yield put(handleDeletedNote(deletedNote[0]))
       break
     }
     case 404:
@@ -92,10 +89,10 @@ function* setDone(args): Generator<> {
   const response = yield fetch(`${API_URL}/notes/${args.payload.noteId}/done`, {method: 'PUT'})
   switch (response.status) {
     case 200: {
+      const editedNote = yield response.json()
+      editedNote.done = true
       // Update board details view
-      const detailsResponse = yield fetch(`${API_URL}/boards/${args.payload.boardId}`)
-      const boarddetails = yield detailsResponse.json()
-      yield put(receiveBoardDetails(boarddetails))
+      yield put(handleEditedNote(editedNote))
       break
     }
     default: {
@@ -110,10 +107,10 @@ function* setUndone(args): Generator<> {
   const response = yield fetch(`${API_URL}/notes/${args.payload.noteId}/undone`, {method: 'PUT'})
   switch (response.status) {
     case 200: {
+      const editedNote = yield response.json()
+      editedNote.done = false
       // Update board details view
-      const detailsResponse = yield fetch(`${API_URL}/boards/${args.payload.boardId}`)
-      const boarddetails = yield detailsResponse.json()
-      yield put(receiveBoardDetails(boarddetails))
+      yield put(handleEditedNote(editedNote))
       break
     }
     default: {

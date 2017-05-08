@@ -8,14 +8,20 @@ export const fetchBoardDetails =
 export const receiveBoardDetails =
   createAction('RECEIVE_BOARD_DETAILS')
 export const changeDetailModalStatuses =
-    createAction('CHANGE_DETAILS_MODAL_STATUS')
+  createAction('CHANGE_DETAILS_MODAL_STATUS')
 export const addNoteAction =
-    createAction('ADD_NOTE')
+  createAction('ADD_NOTE')
+export const handleCreatedNote =
+  createAction('HANDLE_CREATED_NOTE')
 export const editNoteAction =
-    createAction('EDIT_NOTE')
+  createAction('EDIT_NOTE')
+export const handleEditedNote =
+  createAction('HANDLE_EDITED_NOTE')
 export const deleteNoteAction =
-    createAction('DELETE_NOTE')
+  createAction('DELETE_NOTE')
+export const handleDeletedNote =
+  createAction('HANDLE_DELETED_NOTE')
 export const setDoneAction =
-    createAction('SET_NOTE_DONE')
+  createAction('SET_NOTE_DONE')
 export const setUndoneAction =
-    createAction('SET_NOTE_UNDONE')
+  createAction('SET_NOTE_UNDONE')

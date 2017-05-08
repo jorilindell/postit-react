@@ -2,7 +2,7 @@
 
 import {takeLatest} from 'redux-saga'
 import {fork, put} from 'redux-saga/effects'
-import {receiveBoards, changeBoardModalStatuses} from './actions'
+import {receiveBoards, handleCreatedBoard, handleEditedBoard, handleDeletedBoard, changeBoardModalStatuses} from './actions'
 import {allModalsDisabled} from './Boards'
 
 function* fetchBoards(): Generator<> {
@@ -21,12 +21,11 @@ function* addBoard(args): Generator<> {
     })
   switch (response.status) {
     case 200: {
+      const createdBoard = yield response.json()
       // Hide Add note modal
       yield put(changeBoardModalStatuses(allModalsDisabled))
       // Update board details view
-      const responseBoards = yield fetch(`${API_URL}/boards`)
-      const boards = yield responseBoards.json()
-      yield put(receiveBoards(boards))
+      yield put(handleCreatedBoard(createdBoard))
       break
     }
     default: {
@@ -38,7 +37,6 @@ function* addBoard(args): Generator<> {
 }
 
 function* editBoard(args): Generator<> {
-  console.log(args)
   const response = yield fetch(`${API_URL}/boards/${args.payload.boardId}`,
     {
       method: 'PUT',
@@ -48,12 +46,11 @@ function* editBoard(args): Generator<> {
     })
   switch (response.status) {
     case 200: {
+      const editedBoard = yield response.json()
       // Hide Add note modal
       yield put(changeBoardModalStatuses(allModalsDisabled))
       // Update board details view
-      const responseBoards = yield fetch(`${API_URL}/boards`)
-      const boards = yield responseBoards.json()
-      yield put(receiveBoards(boards))
+      yield put(handleEditedBoard(editedBoard[0]))
       break
     }
     default: {
@@ -65,19 +62,17 @@ function* editBoard(args): Generator<> {
 }
 
 function* deleteBoard(args): Generator<> {
-  console.log(args)
   const response = yield fetch(`${API_URL}/boards/${args.payload.boardId}`,
     {
       method: 'DELETE',
     })
   switch (response.status) {
     case 200: {
+      const deletedBoard = yield response.json()
       // Hide Add note modal
       yield put(changeBoardModalStatuses(allModalsDisabled))
       // Update board details view
-      const responseBoards = yield fetch(`${API_URL}/boards`)
-      const boards = yield responseBoards.json()
-      yield put(receiveBoards(boards))
+      yield put(handleDeletedBoard(deletedBoard[0]))
       break
     }
     default: {
