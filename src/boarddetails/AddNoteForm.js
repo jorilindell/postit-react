@@ -37,7 +37,7 @@ export class AddNoteForm extends Component {
           </div>
           <div className={css.modalFooter}>
             <button type="button" onClick={this.closeModal} className={css.btnCancel}>Cancel</button>
-            <button type="submit" disabled={invalid} className={css.btnPrimary}>Submit</button>
+            <button type="submit" disabled={invalid} className={css.btnPrimary}>Add</button>
           </div>
         </form>
       </div>

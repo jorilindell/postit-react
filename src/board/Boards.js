@@ -2,20 +2,19 @@
 
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-//import {ToastContainer, ToastMessage} from 'react-toastr'
 
 import {fetchBoards, addBoardAction, editBoardAction, deleteBoardAction, changeBoardModalStatuses} from './actions'
-import {DeleteBoardModal} from './DeleteBoardModal.js'
+import {DeleteBoardModal} from './DeleteBoardModal'
 import {AddBoardForm} from './AddBoardForm'
 import {EditBoardForm} from './EditBoardForm'
 import {getBoards, getBoardModals} from './selectors'
-import {Header} from '../common/Header.js'
+import {Header} from '../common/Header'
+import {EmptyTableFooter} from '../common/EmptyTableFooter'
+import {SectionHeader} from '../common/SectionHeader'
 import css from '../styles/common.css'
 
 import type {RootState} from '$src/root/types'
 import type {Board, BoardModalType} from './types'
-
-//var ToastMessageFactory = React.createFactory(ToastMessage.animation)
 
 const addModalEnabled = {isAddBoardModalOpen: true, isEditBoardModalOpen: false, isDeleteBoardModalOpen: false}
 const editModalEnabled = {isAddBoardModalOpen: false, isEditBoardModalOpen: true, isDeleteBoardModalOpen: false}
@@ -43,19 +42,6 @@ export class Boards extends Component {
       activeBoard: {id: 0, name: ''},
     }
   }
-  /*
-  showSuccessMessage(title, message) {
-    this.refs.container.success(message, title, {
-      closeButton: true,
-    })
-  }
-
-  showErrorMessage(title, message) {
-    this.refs.container.error(message, title, {
-      closeButton: true,
-    })
-  }
-  */
 
   componentWillMount() {
     this.props.fetchBoards()
@@ -79,7 +65,6 @@ export class Boards extends Component {
     this.setState({
       activeBoard: board,
     })
-    //this.refs.editmodal.setGroupNameField(board.name)
     this.props.changeBoardModalStatuses(editModalEnabled)
   }
 
@@ -111,9 +96,6 @@ export class Boards extends Component {
   render() {
     return (
       <div className={css.page}>
-        {/* <ToastContainer ref="container"
-            toastMessageFactory={ToastMessageFactory}
-            className="toast-top-right"></ToastContainer> */}
         {this.props.modalStatuses.isAddBoardModalOpen &&
           <AddBoardForm  onCancel={this.closeAddBoardModal} onSubmit={(group) => {this.addBoard(group.name)}} initialValues={{name: ''}}/>
         }
@@ -126,15 +108,7 @@ export class Boards extends Component {
         <Header></Header>
         <div className={css.content}>
           <div className={css.container}>
-            <div className={css.sectionHeaderContainer}>
-              <div className={css.sectionHeaderLayout}>
-                <h3><span>{this.props.boards.length} BOARDS</span></h3>
-              </div>
-              <div className={css.sectionHeaderActions}>
-                <button className={css.btnAdd} onClick={this.showAddBoardModal}><span>+</span></button>
-
-              </div>
-            </div>
+            <SectionHeader title='Boards' amount={this.props.boards.length} buttonAction={this.showAddBoardModal}></SectionHeader>
             <table className={css.table}>
               <thead>
                 <tr>
@@ -163,11 +137,7 @@ export class Boards extends Component {
                   </tbody>
                 ) :
                 (
-                  <tbody>
-                    <tr>
-                        <td colSpan="3">No added boards</td>
-                    </tr>
-                  </tbody>
+                  <EmptyTableFooter cols='3' text='No added boards' />
                 )
               }
             </table>

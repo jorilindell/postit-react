@@ -1,21 +1,22 @@
 // @flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-//import {ToastContainer, ToastMessage} from 'react-toastr'
 
-import css from '../styles/common.css'
-import {Header} from '../common/Header'
 import {fetchBoardDetails, addNoteAction, editNoteAction, deleteNoteAction,
   setDoneAction, setUndoneAction, changeDetailModalStatuses} from './actions'
 import {getBoardDetails, getBoardDetailModals} from './selectors'
+import css from '../styles/common.css'
+import {Header} from '../common/Header'
+import {EmptyTableFooter} from '../common/EmptyTableFooter'
+import {SectionHeader} from '../common/SectionHeader'
 import {DeleteNoteModal} from './DeleteNoteModal'
 import {AddNoteForm} from './AddNoteForm'
 import {EditNoteForm} from './EditNoteForm'
+import {Breadcrumb} from '../common/Breadcrumb'
+
 
 import type {RootState} from '$src/root/types'
 import type {BoardDetailsType, BoardDetailModalType} from './types'
-
-//var ToastMessageFactory = React.createFactory(ToastMessage.animation)
 
 const addModalEnabled = {isAddNoteModalOpen: true, isEditNoteModalOpen: false, isDeleteNoteModalOpen: false}
 const editModalEnabled = {isAddNoteModalOpen: false, isEditNoteModalOpen: true, isDeleteNoteModalOpen: false}
@@ -44,19 +45,7 @@ export class BoardDetails extends Component {
       activeNote: {id: 0, message: ''},
     }
   }
-/*
-  showSuccessMessage(title, message) {
-    this.refs.container.success(message, title, {
-      closeButton: true,
-    })
-  }
 
-  showErrorMessage(title, message) {
-    this.refs.container.error(message, title, {
-      closeButton: true,
-    })
-  }
-*/
   showAddNoteModal = () => {
     this.props.changeDetailModalStatuses(addModalEnabled)
   }
@@ -121,9 +110,6 @@ export class BoardDetails extends Component {
   render() {
     return (
       <div className={css.page}>
-        {/* <ToastContainer ref="container"
-            toastMessageFactory={ToastMessageFactory}
-            className="toast-top-right"></ToastContainer> */}
         {this.props.modalStatuses.isAddNoteModalOpen &&
           <AddNoteForm  onCancel={this.closeAddNoteModal} onSubmit={(note) => {this.addNote(note.message)}} initialValues={{message: ''}}/>
         }
@@ -135,23 +121,9 @@ export class BoardDetails extends Component {
         }
         <Header></Header>
         <div className={css.content}>
-          <div className={css.breadcrumbArea}>
-            <div className={css.container}>
-              <ol className={css.breadcrumb}>
-                <li className={css.breadcrumbItem}><a href="/">Boards</a></li>
-                <li className={css.breadcrumbItem}><span>{this.props.boarddetails.name}</span></li>
-              </ol>
-            </div>
-          </div>
+          <Breadcrumb currentlocation={this.props.boarddetails.name} links={[{href: '/', name: 'Boards'}]} />
           <div className={css.container}>
-            <div className={css.sectionHeaderContainer}>
-              <div className={css.sectionHeaderLayout}>
-                <h3><span>{this.props.boarddetails.notes.length} NOTES</span></h3>
-              </div>
-              <div className={css.sectionHeaderActions}>
-                <button className={css.btnAdd} onClick={this.showAddNoteModal}><span>+</span></button>
-              </div>
-            </div>
+            <SectionHeader title='Notes' amount={this.props.boarddetails.notes.length} buttonAction={this.showAddNoteModal}></SectionHeader>
             <table className={css.table}>
               <thead>
                 <tr>
@@ -166,25 +138,20 @@ export class BoardDetails extends Component {
                   this.props.boarddetails.notes.map((note) =>
                     <tr key={note.id}>
                       <td><span>{note.message}</span></td>
+                      {note.done ? (
+                        <td>
+                          <span className={css.statusDone}>Done</span>
+                          <button className={css.btnUndone} onClick={() => this.setStatusToUndone(note)}><span className='fa fa-close'></span></button>
+                        </td>
+                      ) : (
+                        <td>
+                          <span className={css.statusUndone}>Undone</span>
+                          <button className={css.btnDone} onClick={() => this.setStatusToDone(note)}><span className='fa fa-check'></span></button>
+                        </td>
+                      )}
                       <td>
-                        <span className={note.done ? css.statusDone: css.statusUndone }>{note.done ? 'Done': 'Undone' }</span>
-                        {note.done ? (
-                          <button className={css.btnUndone} onClick={() => this.setStatusToUndone(note)}>
-                            <span className='fa fa-close'></span>
-                          </button>
-                        ) : (
-                          <button className={css.btnDone} onClick={() => this.setStatusToDone(note)}>
-                            <span className='fa fa-check'></span>
-                          </button>
-                        )}
-                      </td>
-                      <td>
-                        <button className={css.btnAction} onClick={() => this.showEditNoteModal(note)}>
-                          <span className='fa fa-edit'></span>
-                        </button>
-                        <button className={css.btnAction} onClick={() => this.showDeleteNoteModal(note)}>
-                          <span className='fa fa-trash'></span>
-                        </button>
+                        <button className={css.btnAction} onClick={() => this.showEditNoteModal(note)}><span className='fa fa-edit'></span></button>
+                        <button className={css.btnAction} onClick={() => this.showDeleteNoteModal(note)}><span className='fa fa-trash'></span></button>
                       </td>
                     </tr>
                   )
@@ -192,13 +159,8 @@ export class BoardDetails extends Component {
                 </tbody>
               ):
               (
-                <tbody>
-                  <tr>
-                    <td colSpan="3">No added notes</td>
-                  </tr>
-                </tbody>
-              )
-              }
+                <EmptyTableFooter cols='3' text='No added notes' />
+              )}
             </table>
           </div>
         </div>
