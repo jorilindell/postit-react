@@ -1,24 +1,9 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Field, reduxForm, formValueSelector} from 'redux-form'
-import {minLength, required} from './Validations'
+import {required} from '../common/Validations'
 import css from '../styles/common.css'
-
-const minLength_1 = minLength(1)
-
-const textInput = ({input, placeholder, type, meta: {touched, error, warning}}: object) => {
-  return (
-    <div className={css.formGroup}>
-      <label htmlFor="name" className={css.controlLabel}>
-        <span>Note Message</span>
-      </label>
-      <span className={css.inputGroup}>
-        <input {...input} placeholder={placeholder} type={type} className={css.formInput}/>
-        {touched && ((error && <div className={css.validationText}>{error}</div>) || (warning && <div className={css.validationText}>{warning}</div>))}
-      </span>
-    </div>
-  )
-}
+import {FormTextInput} from '../common/FormTextInput'
 
 type EditNoteFormProps = {
   handleSubmit: Function,
@@ -45,9 +30,9 @@ export class EditNoteForm extends Component {
         </div>
         <form onSubmit={handleSubmit}>
           <div className={css.modalBody}>
-            <Field name="message" type="text"
-              component={textInput} placeholder="Enter Note Message"
-              validate={[required, minLength_1]}
+            <Field name="message" type="text" label='Note Message'
+              component={FormTextInput} placeholder="Enter Note Message"
+              validate={[required]}
             />
           </div>
           <div className={css.modalFooter}>
@@ -66,7 +51,7 @@ EditNoteForm = reduxForm({
 })(EditNoteForm)
 
 // Decorate with connect to read form values
-const selector = formValueSelector('editNoteForm') // <-- same as form name
+const selector = formValueSelector('editNoteForm')
 export default connect(
   state => {
     const noteMessage = selector(state, 'message')

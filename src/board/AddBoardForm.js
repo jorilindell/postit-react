@@ -1,26 +1,13 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Field, reduxForm, formValueSelector} from 'redux-form'
-import {minLength, maxLength, required} from './Validations'
+import {minLength, maxLength, required} from '../common/Validations'
 import css from '../styles/common.css'
+import {FormTextInput} from '../common/FormTextInput'
+
 
 const minLength_3 = minLength(3)
 const maxLength_40 = maxLength(40)
-
-
-const textInput = ({input, placeholder, type, meta: {touched, error, warning}}: object) => {
-  return (
-    <div className={css.formGroup}>
-      <label htmlFor="name" className={css.controlLabel}>
-        <span>Board Name</span>
-      </label>
-      <span className={css.inputGroup}>
-        <input {...input} placeholder={placeholder} type={type} className={css.formInput}/>
-        {touched && ((error && <div className={css.validationText}>{error}</div>) || (warning && <div className={css.validationText}>{warning}</div>))}
-      </span>
-    </div>
-  )
-}
 
 type AddBoardFormProps = {
   handleSubmit: Function,
@@ -47,8 +34,8 @@ export class AddBoardForm extends Component {
         </div>
         <form onSubmit={handleSubmit}>
           <div className={css.modalBody}>
-            <Field name="name" type="text"
-              component={textInput} placeholder="New value"
+            <Field name="name" type="text" label='Board name'
+              component={FormTextInput} placeholder="New value"
               validate={[required, minLength_3, maxLength_40]}
             />
           </div>
