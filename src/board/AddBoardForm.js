@@ -8,7 +8,7 @@ const minLength_3 = minLength(3)
 const maxLength_40 = maxLength(40)
 
 
-const textInput = ({input, placeholder, type, meta: {touched, error, warning}}) => {
+const textInput = ({input, placeholder, type, meta: {touched, error, warning}}: object) => {
   return (
     <div className={css.formGroup}>
       <label htmlFor="name" className={css.controlLabel}>
@@ -16,7 +16,7 @@ const textInput = ({input, placeholder, type, meta: {touched, error, warning}}) 
       </label>
       <span className={css.inputGroup}>
         <input {...input} placeholder={placeholder} type={type} className={css.formInput}/>
-        {touched && ((error && <span className={css.validationText}>{error}</span>) || (warning && <span>{warning}</span>))}
+        {touched && ((error && <div className={css.validationText}>{error}</div>) || (warning && <div className={css.validationText}>{warning}</div>))}
       </span>
     </div>
   )
@@ -32,7 +32,7 @@ type AddBoardFormProps = {
 export class AddBoardForm extends Component {
   props: AddBoardFormProps
 
-  closeModal = (e) => {
+  closeModal = () => {
     this.props.onCancel()
   }
 
@@ -69,7 +69,7 @@ AddBoardForm = reduxForm({
 
 // Decorate with connect to read form values
 const selector = formValueSelector('addBoardForm') // <-- same as form name
-AddBoardForm = connect(
+export default connect(
   state => {
     const boardName = selector(state, 'name')
     return {
@@ -77,5 +77,3 @@ AddBoardForm = connect(
     }
   }
 )(AddBoardForm)
-
-export default AddBoardForm

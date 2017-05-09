@@ -6,7 +6,7 @@ import css from '../styles/common.css'
 
 const minLength_1 = minLength(1)
 
-const textInput = ({input, placeholder, type, meta: {touched, error, warning}}) => {
+const textInput = ({input, placeholder, type, meta: {touched, error, warning}}: object) => {
   return (
     <div className={css.formGroup}>
       <label htmlFor="name" className={css.controlLabel}>
@@ -14,7 +14,7 @@ const textInput = ({input, placeholder, type, meta: {touched, error, warning}}) 
       </label>
       <span className={css.inputGroup}>
         <input {...input} placeholder={placeholder} type={type} className={css.formInput}/>
-        {touched && ((error && <span className={css.validationText}>{error}</span>) || (warning && <span>{warning}</span>))}
+        {touched && ((error && <div className={css.validationText}>{error}</div>) || (warning && <div className={css.validationText}>{warning}</div>))}
       </span>
     </div>
   )
@@ -30,7 +30,7 @@ type AddNoteFormProps = {
 export class AddNoteForm extends Component {
   props: AddNoteFormProps
 
-  closeModal = (e) => {
+  closeModal = () => {
     this.props.onCancel()
   }
 
@@ -67,7 +67,7 @@ AddNoteForm = reduxForm({
 
 // Decorate with connect to read form values
 const selector = formValueSelector('addNoteForm') // <-- same as form name
-AddNoteForm = connect(
+export default connect(
   state => {
     const noteMessage = selector(state, 'message')
     return {
@@ -75,5 +75,3 @@ AddNoteForm = connect(
     }
   }
 )(AddNoteForm)
-
-export default AddNoteForm

@@ -160,43 +160,43 @@ export class BoardDetails extends Component {
                   <th className={css.actionColumn}></th>
                 </tr>
               </thead>
-              {this.props.boarddetails.notes.length > 0 ?(
-              <tbody>
-              {
-                this.props.boarddetails.notes.map((note) =>
-                  <tr key={note.id}>
-                    <td><span>{note.message}</span></td>
-                    <td>
-                      <span className={note.done ? css.statusDone: css.statusUndone }>{note.done ? 'Done': 'Undone' }</span>
-                      {note.done ? (
-                        <button className={css.btnUndone} onClick={() => this.setStatusToUndone(note)}>
-                          <span className='fa fa-close'></span>
+              {this.props.boarddetails.notes.length > 0 ? (
+                <tbody>
+                {
+                  this.props.boarddetails.notes.map((note) =>
+                    <tr key={note.id}>
+                      <td><span>{note.message}</span></td>
+                      <td>
+                        <span className={note.done ? css.statusDone: css.statusUndone }>{note.done ? 'Done': 'Undone' }</span>
+                        {note.done ? (
+                          <button className={css.btnUndone} onClick={() => this.setStatusToUndone(note)}>
+                            <span className='fa fa-close'></span>
+                          </button>
+                        ) : (
+                          <button className={css.btnDone} onClick={() => this.setStatusToDone(note)}>
+                            <span className='fa fa-check'></span>
+                          </button>
+                        )}
+                      </td>
+                      <td>
+                        <button className={css.btnAction} onClick={() => this.showEditNoteModal(note)}>
+                          <span className='fa fa-edit'></span>
                         </button>
-                      ) : (
-                        <button className={css.btnDone} onClick={() => this.setStatusToDone(note)}>
-                          <span className='fa fa-check'></span>
+                        <button className={css.btnAction} onClick={() => this.showDeleteNoteModal(note)}>
+                          <span className='fa fa-trash'></span>
                         </button>
-                      )}
-                    </td>
-                    <td>
-                      <button className={css.btnAction} onClick={() => this.showEditNoteModal(note)}>
-                        <span className='fa fa-edit'></span>
-                      </button>
-                      <button className={css.btnAction} onClick={() => this.showDeleteNoteModal(note)}>
-                        <span className='fa fa-trash'></span>
-                      </button>
-                    </td>
-                  </tr>
-                )
-              }
-              </tbody>
+                      </td>
+                    </tr>
+                  )
+                }
+                </tbody>
               ):
               (
-              <tbody>
-                <tr>
-                  <td colSpan="3">No added notes</td>
-                </tr>
-              </tbody>
+                <tbody>
+                  <tr>
+                    <td colSpan="3">No added notes</td>
+                  </tr>
+                </tbody>
               )
               }
             </table>
