@@ -20,3 +20,11 @@ export const deleteBoardAction =
   createAction('DELETE_BOARD')
 export const handleDeletedBoard =
   createAction('HANDLE_DELETED_BOARD')
+export const changeBoardSortOrder =
+  createAction('CHANGE_BOARD_SORT_ORDER')
+export const setActiveBoardPage =
+  createAction('SET_ACTIVE_BOARD_PAGE')
+export const setBoardPageSize =
+  createAction('SET_BOARD_PAGE_SIZE')
+export const setBoardSearchValue =
+  createAction('SET_BOARD_SEARCH_VALUE')

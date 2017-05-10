@@ -11,8 +11,8 @@ type BreadcrumbPropsTypes = {
 export class Breadcrumb extends Component {
   props: BreadcrumbPropsTypes
   render() {
-    const listLinks = this.props.links.map((link) =>
-      <li className={css.breadcrumbItem}><a href={link.href}>{link.name}</a></li>
+    const listLinks = this.props.links.map((link, index) =>
+      <li className={css.breadcrumbItem} key={index}><a href={link.href}>{link.name}</a></li>
     )
     return (
       <div className={css.breadcrumbArea}>

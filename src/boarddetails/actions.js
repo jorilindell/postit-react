@@ -25,3 +25,11 @@ export const setDoneAction =
   createAction('SET_NOTE_DONE')
 export const setUndoneAction =
   createAction('SET_NOTE_UNDONE')
+export const changeNoteSortOrder =
+  createAction('CHANGE_NOTE_SORT_ORDER')
+export const setActiveNotePage =
+  createAction('SET_ACTIVE_NOTE_PAGE')
+export const setNotePageSize =
+  createAction('SET_NOTE_PAGE_SIZE')
+export const setNoteSearchValue =
+  createAction('SET_NOTE_SEARCH_VALUE')

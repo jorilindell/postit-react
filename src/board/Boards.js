@@ -3,14 +3,16 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
-import {fetchBoards, addBoardAction, editBoardAction, deleteBoardAction, changeBoardModalStatuses} from './actions'
+import {getBoards, getNumberOfHiddenBoards, getBoardModals, getSortOrder, getPaginatedBoards, getActivePage, getPageSize, getSearchValue} from './selectors'
+import {fetchBoards, addBoardAction, editBoardAction, deleteBoardAction, changeBoardSortOrder, setActiveBoardPage,
+  setBoardSearchValue, setBoardPageSize, changeBoardModalStatuses} from './actions'
 import {DeleteBoardModal} from './DeleteBoardModal'
 import {AddBoardForm} from './AddBoardForm'
 import {EditBoardForm} from './EditBoardForm'
-import {getBoards, getBoardModals} from './selectors'
 import {Header} from '../common/Header'
 import {EmptyTableFooter} from '../common/EmptyTableFooter'
 import {SectionHeader} from '../common/SectionHeader'
+import {Pagination} from '../common/Pagination'
 import css from '../styles/common.css'
 
 import type {RootState} from '$src/root/types'
@@ -23,14 +25,31 @@ export const allModalsDisabled = {isAddBoardModalOpen: false, isEditBoardModalOp
 
 type Props = {
   boards: Array<Board>,
+  hiddenBoardsAmount: number,
+  paginatedBoards: Array<Board>,
+  sortAsc: boolean,
+  activePage: number,
+  pageSize: number,
+  searchValue: string,
   modalStatuses: BoardModalType,
   fetchBoards: Function,
   addBoardAction: Function,
   editBoardAction: Function,
   deleteBoardAction: Function,
+  changeBoardSortOrder: Function,
+  setActiveBoardPage: Function,
+  setBoardSearchValue: Function,
+  setBoardPageSize: Function,
   changeBoardModalStatuses: Function,
+  submitBoard: Function,
   params: React.PropTypes.object,
-  submitBoard: Function
+}
+
+const sortStyle = {
+  marginLeft: '10px',
+}
+const sortableHeader = {
+  cursor: 'pointer',
 }
 
 export class Boards extends Component {
@@ -48,7 +67,6 @@ export class Boards extends Component {
   }
 
   showAddBoardModal = () => {
-    //this.refs.addmodal.clearNameField()
     this.props.changeBoardModalStatuses(addModalEnabled)
   }
 
@@ -90,8 +108,14 @@ export class Boards extends Component {
   deleteBoard = () => {
     this.props.deleteBoardAction({boardId: this.state.activeBoard.id})
   }
-  submitBoard = () => {
-
+  setActivePage = (page) => {
+    this.props.setActiveBoardPage({pagenumber: page})
+  }
+  setPageSize = (e) => {
+    this.props.setBoardPageSize({size: e.target.value})
+  }
+  setSearchValue = (e) => {
+    this.props.setBoardSearchValue({text: e.target.value})
   }
   render() {
     return (
@@ -108,11 +132,17 @@ export class Boards extends Component {
         <Header></Header>
         <div className={css.content}>
           <div className={css.container}>
-            <SectionHeader title='Boards' amount={this.props.boards.length} buttonAction={this.showAddBoardModal}></SectionHeader>
+            <SectionHeader hiddenItemsN={this.props.hiddenBoardsAmount}  search={this.setSearchValue} searchValue={this.props.searchValue} title='Boards' amount={this.props.boards.length} buttonAction={this.showAddBoardModal}></SectionHeader>
             <table className={css.table}>
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th style={sortableHeader} onClick={this.props.changeBoardSortOrder}>
+                    <span>Name</span>
+                    {this.props.sortAsc ?
+                      ( <span className="fa fa-sort-amount-asc" style={sortStyle}></span> ) :
+                      ( <span className="fa fa-sort-amount-desc" style={sortStyle}></span> )
+                    }
+                  </th>
                   <th className={css.actionColumn}></th>
                 </tr>
               </thead>
@@ -120,7 +150,7 @@ export class Boards extends Component {
                 (
                   <tbody>
                   {
-                    this.props.boards.map((board) =>
+                    this.props.paginatedBoards.map((board) =>
                       <tr key={board.id}>
                       <td><a href={`/${board.id}`}>{board.name}</a></td>
                       <td>
@@ -137,10 +167,11 @@ export class Boards extends Component {
                   </tbody>
                 ) :
                 (
-                  <EmptyTableFooter cols='3' text='No added boards' />
+                  <EmptyTableFooter cols='3' text='No boards found' />
                 )
               }
             </table>
+            <Pagination selectPageSize={this.setPageSize} selectPage={this.setActivePage} arraySize={this.props.boards.length} pageSize={this.props.pageSize} activePage={this.props.activePage}></Pagination>
           </div>
         </div>
       </div>
@@ -150,7 +181,14 @@ export class Boards extends Component {
 
 const mapStateToProps = (state: RootState) => ({
   boards: getBoards(state),
+  hiddenBoardsAmount: getNumberOfHiddenBoards(state),
+  paginatedBoards: getPaginatedBoards(state),
+  activePage: getActivePage(state),
+  pageSize: getPageSize(state),
+  sortAsc: getSortOrder(state),
+  searchValue: getSearchValue(state),
   modalStatuses: getBoardModals(state),
 })
 
-export default connect(mapStateToProps, {fetchBoards, addBoardAction, editBoardAction, deleteBoardAction, changeBoardModalStatuses})(Boards)
+export default connect(mapStateToProps, {fetchBoards, addBoardAction, editBoardAction, deleteBoardAction, changeBoardSortOrder, setBoardSearchValue,
+  setActiveBoardPage, setBoardPageSize, changeBoardModalStatuses})(Boards)

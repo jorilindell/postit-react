@@ -2,21 +2,23 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
-import {fetchBoardDetails, addNoteAction, editNoteAction, deleteNoteAction,
-  setDoneAction, setUndoneAction, changeDetailModalStatuses} from './actions'
-import {getBoardDetails, getBoardDetailModals} from './selectors'
+import {fetchBoardDetails, addNoteAction, editNoteAction, deleteNoteAction, changeNoteSortOrder,
+  setActiveNotePage, setNotePageSize, setNoteSearchValue, setDoneAction, setUndoneAction, changeDetailModalStatuses} from './actions'
+import {getBoardName, getNotes, getNumberOfHiddenNotes, getSortOrder, getSortField,
+  getBoardDetailModals, getActivePage, getPageSize, getSearchValue, getPaginatedNotes} from './selectors'
 import css from '../styles/common.css'
+import {AddNoteForm} from './AddNoteForm'
+import {EditNoteForm} from './EditNoteForm'
+import {DeleteNoteModal} from './DeleteNoteModal'
 import {Header} from '../common/Header'
 import {EmptyTableFooter} from '../common/EmptyTableFooter'
 import {SectionHeader} from '../common/SectionHeader'
-import {DeleteNoteModal} from './DeleteNoteModal'
-import {AddNoteForm} from './AddNoteForm'
-import {EditNoteForm} from './EditNoteForm'
 import {Breadcrumb} from '../common/Breadcrumb'
+import {Pagination} from '../common/Pagination'
 
 
 import type {RootState} from '$src/root/types'
-import type {BoardDetailsType, BoardDetailModalType} from './types'
+import type {Note, BoardDetailModalType} from './types'
 
 const addModalEnabled = {isAddNoteModalOpen: true, isEditNoteModalOpen: false, isDeleteNoteModalOpen: false}
 const editModalEnabled = {isAddNoteModalOpen: false, isEditNoteModalOpen: true, isDeleteNoteModalOpen: false}
@@ -24,16 +26,34 @@ const deleteModalEnabled = {isAddNoteModalOpen: false, isEditNoteModalOpen: fals
 export const allModalsDisabled = {isAddNoteModalOpen: false, isEditNoteModalOpen: false, isDeleteNoteModalOpen: false}
 
 type Props = {
-  boarddetails: BoardDetailsType,
+  boardName: name,
+  notes: Array<Note>,
+  hiddenNotesAmount: number,
+  paginatedNotes: Array<Note>,
+  activePage: number,
+  pageSize: number,
+  sortAsc: boolean,
+  sortField: string,
+  searchValue: string,
   modalStatuses: BoardDetailModalType,
   fetchBoardDetails: Function,
   addNoteAction: Function,
   editNoteAction: Function,
   deleteNoteAction: Function,
+  changeNoteSortOrder: Function,
+  setActiveNotePage: Function,
+  setNotePageSize: Function,
+  setNoteSearchValue: Function,
   setDoneAction: Function,
   setUndoneAction: Function,
   changeDetailModalStatuses: Function,
   params: React.PropTypes.object,
+}
+const sortStyle = {
+  marginLeft: '10px',
+}
+const sortableHeader = {
+  cursor: 'pointer',
 }
 
 export class BoardDetails extends Component {
@@ -102,7 +122,15 @@ export class BoardDetails extends Component {
       noteId: this.state.activeNote.id,
       boardId: this.props.params.boardId})
   }
-
+  setActivePage = (page) => {
+    this.props.setActiveNotePage({pagenumber: page})
+  }
+  setPageSize = (e) => {
+    this.props.setNotePageSize({size: e.target.value})
+  }
+  setSearchValue = (e) => {
+    this.props.setNoteSearchValue({text: e.target.value})
+  }
   componentWillMount() {
     this.props.fetchBoardDetails({boardId: this.props.params.boardId})
   }
@@ -120,22 +148,38 @@ export class BoardDetails extends Component {
           <DeleteNoteModal message={this.state.activeNote.message} onDelete={() => {this.deleteNote()}} onCancel={this.closeDeleteNoteModal} />
         }
         <Header></Header>
-        <div className={css.content}>
-          <Breadcrumb currentlocation={this.props.boarddetails.name} links={[{href: '/', name: 'Boards'}]} />
+        <div className={css.contentWithBreadcrumb}>
+          <Breadcrumb currentlocation={this.props.boardName} links={[{href: '/', name: 'Boards'}]} />
           <div className={css.container}>
-            <SectionHeader title='Notes' amount={this.props.boarddetails.notes.length} buttonAction={this.showAddNoteModal}></SectionHeader>
+            <SectionHeader hiddenItemsN={this.props.hiddenNotesAmount} search={this.setSearchValue} searchValue={this.props.searchValue} title='Notes' amount={this.props.notes.length} buttonAction={this.showAddNoteModal}></SectionHeader>
             <table className={css.table}>
               <thead>
                 <tr>
-                  <th>Message</th>
-                  <th className={css.statusColumn}>Status</th>
+                  <th style={sortableHeader} onClick={() => this.props.changeNoteSortOrder({field: 'message'})}>
+                    <span>Message</span>
+                    {this.props.sortField === 'message' && this.props.sortAsc &&
+                      <span className="fa fa-sort-amount-asc" style={sortStyle}></span>
+                    }
+                    {this.props.sortField === 'message' && !this.props.sortAsc &&
+                      <span className="fa fa-sort-amount-desc" style={sortStyle}></span>
+                    }
+                  </th>
+                  <th className={css.statusColumn} style={sortableHeader} onClick={() => this.props.changeNoteSortOrder({field: 'done'})}>
+                    <span>Status</span>
+                    {this.props.sortField === 'done' && this.props.sortAsc &&
+                      <span className="fa fa-sort-amount-asc" style={sortStyle}></span>
+                    }
+                    {this.props.sortField === 'done' && !this.props.sortAsc &&
+                      <span className="fa fa-sort-amount-desc" style={sortStyle}></span>
+                    }
+                  </th>
                   <th className={css.actionColumn}></th>
                 </tr>
               </thead>
-              {this.props.boarddetails.notes.length > 0 ? (
+              {this.props.notes.length > 0 ? (
                 <tbody>
                 {
-                  this.props.boarddetails.notes.map((note) =>
+                  this.props.paginatedNotes.map((note) =>
                     <tr key={note.id}>
                       <td><span>{note.message}</span></td>
                       {note.done ? (
@@ -159,9 +203,10 @@ export class BoardDetails extends Component {
                 </tbody>
               ):
               (
-                <EmptyTableFooter cols='3' text='No added notes' />
+                <EmptyTableFooter cols='3' text='No notes found' />
               )}
             </table>
+            <Pagination selectPageSize={this.setPageSize} selectPage={this.setActivePage} arraySize={this.props.notes.length} pageSize={this.props.pageSize} activePage={this.props.activePage}></Pagination>
           </div>
         </div>
       </div>
@@ -170,10 +215,18 @@ export class BoardDetails extends Component {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  boarddetails: getBoardDetails(state),
+  boardName: getBoardName(state),
+  notes: getNotes(state),
+  hiddenNotesAmount: getNumberOfHiddenNotes(state),
+  paginatedNotes: getPaginatedNotes(state),
+  activePage: getActivePage(state),
+  pageSize: getPageSize(state),
+  sortAsc: getSortOrder(state),
+  sortField: getSortField(state),
+  searchValue: getSearchValue(state),
   modalStatuses: getBoardDetailModals(state),
 })
 
 export default connect(mapStateToProps, {
-  fetchBoardDetails, addNoteAction, editNoteAction, deleteNoteAction,
-  setDoneAction, setUndoneAction, changeDetailModalStatuses}) (BoardDetails)
+  fetchBoardDetails, addNoteAction, editNoteAction, deleteNoteAction, changeNoteSortOrder, setActiveNotePage, setNotePageSize,
+  setDoneAction, setUndoneAction, setNoteSearchValue, changeDetailModalStatuses}) (BoardDetails)
